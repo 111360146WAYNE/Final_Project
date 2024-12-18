@@ -28,6 +28,62 @@ public class GameBoard extends BaseAdapter {
         highScore = prefs.getInt("HIGH_SCORE", 0);
         initializeBoard();
     }
+
+    public interface OnGameOverListener {
+        void onGameOver(int finalScore);
+        void onContinueGame();
+    }
+
+    private OnGameOverListener gameOverListener;
+
+    // 設置遊戲結束監聽器
+    public void setOnGameOverListener(OnGameOverListener listener) {
+        this.gameOverListener = listener;
+    }
+
+    private boolean isGameOver() {
+        // 檢查是否還有空白格子
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                if (board[row][col] == 0) {
+                    return false;  // 有空白格子，遊戲未結束
+                }
+            }
+        }
+
+        // 檢查是否還有可合併的相鄰方塊
+        // 水平方向
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE - 1; col++) {
+                if (board[row][col] == board[row][col + 1]) {
+                    return false;  // 有可合併的方塊，遊戲未結束
+                }
+            }
+        }
+
+        // 垂直方向
+        for (int col = 0; col < BOARD_SIZE; col++) {
+            for (int row = 0; row < BOARD_SIZE - 1; row++) {
+                if (board[row][col] == board[row + 1][col]) {
+                    return false;  // 有可合併的方塊，遊戲未結束
+                }
+            }
+        }
+
+        // 如果沒有空白格子且沒有可合併的方塊，遊戲結束
+        return true;
+    }
+
+    // 修改移動方法，加入遊戲結束檢測
+    private void checkGameStatus() {
+        if (isGameOver()) {
+            // 遊戲結束
+            if (gameOverListener != null) {
+                gameOverListener.onGameOver(currentScore);
+            }
+        }
+    }
+
     // 分數變化監聽器接口
     public interface OnScoreChangeListener {
         void onScoreChanged(int newScore);
@@ -38,6 +94,7 @@ public class GameBoard extends BaseAdapter {
     public void setOnScoreChangeListener(OnScoreChangeListener listener) {
         this.scoreChangeListener = listener;
     }
+
 
     private void initializeBoard() {
         // 初始化遊戲板，添加兩個初始方塊
@@ -113,6 +170,12 @@ public class GameBoard extends BaseAdapter {
                 moved = true;
             }
 
+            if (moved) {
+                addRandomTile();
+                checkGameStatus();  // 檢查遊戲狀態
+            }
+
+
             // 更新遊戲板
             board[row] = newRow;
         }
@@ -155,6 +218,12 @@ public class GameBoard extends BaseAdapter {
             if (!Arrays.equals(board[row], newRow)) {
                 moved = true;
             }
+
+            if (moved) {
+                addRandomTile();
+                checkGameStatus();  // 檢查遊戲狀態
+            }
+
 
             // 更新遊戲板
             board[row] = newRow;
@@ -220,6 +289,12 @@ public class GameBoard extends BaseAdapter {
             addRandomTile();
         }
 
+        if (moved) {
+            addRandomTile();
+            checkGameStatus();  // 檢查遊戲狀態
+        }
+
+
         // 更新UI
         notifyDataSetChanged();
     }
@@ -277,6 +352,11 @@ public class GameBoard extends BaseAdapter {
         // 如果有移動，則添加新的隨機方塊
         if (moved) {
             addRandomTile();
+        }
+
+        if (moved) {
+            addRandomTile();
+            checkGameStatus();  // 檢查遊戲狀態
         }
 
         // 更新UI
