@@ -170,20 +170,16 @@ public class GameBoard extends BaseAdapter {
                 moved = true;
             }
 
-            if (moved) {
-                addRandomTile();
-                checkGameStatus();  // 檢查遊戲狀態
-            }
-
 
             // 更新遊戲板
             board[row] = newRow;
         }
 
-        // 如果有移動，則添加新的隨機方塊
         if (moved) {
             addRandomTile();
+            checkGameStatus();  // 檢查遊戲狀態
         }
+
 
         // 更新UI
         notifyDataSetChanged();
@@ -219,20 +215,17 @@ public class GameBoard extends BaseAdapter {
                 moved = true;
             }
 
-            if (moved) {
-                addRandomTile();
-                checkGameStatus();  // 檢查遊戲狀態
-            }
 
 
             // 更新遊戲板
             board[row] = newRow;
         }
 
-        // 如果有移動，則添加新的隨機方塊
         if (moved) {
             addRandomTile();
+            checkGameStatus();  // 檢查遊戲狀態
         }
+
 
         // 更新UI
         notifyDataSetChanged();
@@ -284,10 +277,7 @@ public class GameBoard extends BaseAdapter {
             }
         }
 
-        // 如果有移動，則添加新的隨機方塊
-        if (moved) {
-            addRandomTile();
-        }
+
 
         if (moved) {
             addRandomTile();
@@ -349,10 +339,6 @@ public class GameBoard extends BaseAdapter {
             }
         }
 
-        // 如果有移動，則添加新的隨機方塊
-        if (moved) {
-            addRandomTile();
-        }
 
         if (moved) {
             addRandomTile();
